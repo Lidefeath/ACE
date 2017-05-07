@@ -29,6 +29,12 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <StyleCopTreatErrorsAsWarnings>False</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -223,6 +229,9 @@
     <Compile Include="Network\GameEvent\Events\GameEventHouseStatus.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventIdentifyObjectResponse.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventPurgeAllEnchantments.cs" />
+    <Compile Include="Network\GameEvent\Events\GameEventInflictMeleeDamage.cs" />
+    <Compile Include="Network\GameEvent\Events\GameEventPurgeAllEnchantments.cs" />
+    <Compile Include="Network\GameEvent\Events\GameEventReceiveMeleeDamage.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventYourDeath.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventUseDone.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventPingResponse.cs" />
@@ -322,6 +331,9 @@
     <Compile Include="StateMachines\Rules.cs" />
     <Compile Include="StateMachines\Rules\ContainerRules.cs" />
     <Compile Include="StateMachines\Rules\MovementRules.cs" />
+    <Compile Include="StateMachines\Enum\MonsterStates.cs" />
+    <Compile Include="StateMachines\Rule.cs" />
+    <Compile Include="StateMachines\Rules\MonsterRules.cs" />
     <Compile Include="StateMachines\StateMachine.cs" />
   </ItemGroup>
   <ItemGroup>
