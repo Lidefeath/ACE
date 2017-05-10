@@ -8,9 +8,6 @@ using ACE.Network.Motion;
 using ACE.StateMachines;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ACE.Entity
 {
@@ -216,11 +213,28 @@ namespace ACE.Entity
             isMoving = false;
             stateTimerStop = 0;
 
+            // Update the players CURRENT_ATTACKER_ID
+            var updateMessage = new GameMessagePrivateUpdateInstanceId(this.Guid);
+            TargetPlayer.Session.Network.EnqueueSend(updateMessage);
+
             OnAttackPlayer();
         }
 
         public void OnAttackPlayer()
         {
+            // Check distance again, in case the target moved
+            if (this.Location.SquaredDistanceTo(TargetPlayer.Location) > 10)
+            {
+                Console.WriteLine($"{this.Name} wants to attack, but {TargetPlayer.Name} moved away.");
+
+                // Player moved too far away so break combat
+                if (combatStateMachine.ChangeState((int)MonsterStates.ExitCombat))
+                    OnExitCombat();
+                else
+                    Console.WriteLine($"Error changing from state {combatStateMachine.CurrentState} to state {MonsterStates.ExitCombat}");
+            }
+
+            // Now (continue) attack since we're close enough
             if (stateTimerStop < WorldManager.PortalYearTicks)
             {
                 Random random = new Random((int)WorldManager.PortalYearTicks);

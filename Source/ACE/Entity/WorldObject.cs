@@ -109,7 +109,7 @@ namespace ACE.Entity
 
         public void SetCombatMode(CombatMode newCombatMode)
         {
-            log.InfoFormat("Changing combat mode for {0} to {1}", this.Guid, newCombatMode);
+            log.InfoFormat("Changing combat mode for {0} to {1}", this.Guid.Full, newCombatMode);
             // TODO: any sort of validation
             CombatMode = newCombatMode;
             switch (CombatMode)

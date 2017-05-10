@@ -12,7 +12,7 @@ namespace ACE.Network.GameEvent.Events
             Writer.Write(severity);
             Writer.Write(amount);
             Writer.Write(critical);
-            Writer.Write(attackConditions); // sneak attack, dirty fighting
+            Writer.Write(attackConditions); // sneak attack (bitmask 4?), recklessness (bitmask 2?)
             Writer.Align();
         }
     }

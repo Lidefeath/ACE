@@ -152,6 +152,7 @@
     <Compile Include="Network\Enum\CombatMode.cs" />
     <Compile Include="Network\Enum\CoverageMask.cs" />
     <Compile Include="Network\Enum\IdentifyResponseFlags.cs" />
+    <Compile Include="Network\Enum\LinkProperty.cs" />
     <Compile Include="Network\Enum\PlayScript.cs" />
     <Compile Include="Network\Enum\EquipMask.cs" />
     <Compile Include="Network\Enum\Material.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Network\GameMessages\Messages\GameMessageBootAccount.cs" />
     <Compile Include="Network\GameMessages\Messages\GameMessagePickupEvent.cs" />
     <Compile Include="Network\GameMessages\Messages\GameMessagePlayerKilled.cs" />
+    <Compile Include="Network\GameMessages\Messages\GameMessagePrivateUpdateInstanceId.cs" />
     <Compile Include="Network\GameMessages\Messages\GameMessagePutObjectIn3d.cs" />
     <Compile Include="Network\GameMessages\Messages\GameMessagePutObjectInContainer.cs" />
     <Compile Include="Network\GameMessages\Messages\GameMessageUpdateInstanceId.cs" />
