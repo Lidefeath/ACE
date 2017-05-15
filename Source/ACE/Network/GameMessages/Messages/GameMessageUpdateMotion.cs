@@ -1,6 +1,7 @@
 ﻿using ACE.Network.Sequence;
 using ACE.Network.Motion;
 using ACE.Entity;
+using ACE.Network.Enum;
 
 namespace ACE.Network.GameMessages.Messages
 {
@@ -11,13 +12,18 @@ namespace ACE.Network.GameMessages.Messages
         {
             Writer.WriteGuid(animationTargetGuid);
             // who is getting the message - the rest of the sequences are the target objects sequences -may be the same
-            Writer.Write(instance_timestamp);
-            Writer.Write(sequence.GetNextSequence(SequenceType.ObjectMovement));
+            byte[] movement_instance;
+            var server_control_timestamp = sequence.GetNextSequence(SequenceType.ObjectServerControl);
+            
             if (!newState.IsAutonomous)
-                Writer.Write(sequence.GetNextSequence(SequenceType.ObjectServerControl));
+                movement_instance = sequence.GetNextSequence(SequenceType.ObjectMovement);
             else
-                Writer.Write(sequence.GetCurrentSequence(SequenceType.ObjectServerControl));
+                movement_instance = sequence.GetCurrentSequence(SequenceType.ObjectMovement);
 
+            Writer.Write(instance_timestamp);
+            Writer.Write(server_control_timestamp);
+            Writer.Write(movement_instance);
+            
             ushort autonomous;
             if (newState.IsAutonomous)
                 autonomous = 1;
@@ -25,25 +31,6 @@ namespace ACE.Network.GameMessages.Messages
                 autonomous = 0;
             Writer.Write(autonomous);
             var movementData = newState.GetPayload(animationTargetGuid, sequence);
-            Writer.Write(movementData);
-            Writer.Align();
-        }
-
-        public GameMessageUpdateMotion(WorldObject player, Position moveToPosition, UniversalMotion newState, MovementTypes movementType, float runRate = 1.0f) : base(GameMessageOpcode.Motion, GameMessageGroup.Group0A)
-        {
-            Writer.WriteGuid(player.Guid); // Object_Id (uint)
-            Writer.Write(player.Sequences.GetCurrentSequence(SequenceType.ObjectInstance)); // Instance_Timestamp
-            Writer.Write(player.Sequences.GetNextSequence(SequenceType.ObjectServerControl)); // Server_Control_Timestamp
-            Writer.Write(player.Sequences.GetNextSequence(SequenceType.ObjectMovement)); // Movement_Timestamp
-
-            ushort autonomous;
-            if (newState.IsAutonomous)
-                autonomous = 1;
-            else
-                autonomous = 0;
-            Writer.Write(autonomous);
-
-            var movementData = newState.GetPayload(player, 0.6f);
             Writer.Write(movementData);
             Writer.Align();
         }

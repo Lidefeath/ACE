@@ -38,9 +38,9 @@ namespace ACE.Entity
                   aceC.Position)
         {
             if (aceC.WeenieClassId < 0x8000u)
-                this.WeenieClassid = aceC.WeenieClassId;
+                WeenieClassid = aceC.WeenieClassId;
             else
-                this.WeenieClassid = (ushort)(aceC.WeenieClassId - 0x8000);
+                WeenieClassid = (ushort)(aceC.WeenieClassId - 0x8000);
 
             base.SetObjectData(aceC.CreatureData);
             base.SetAbilities(aceC.CreatureData);
@@ -49,13 +49,13 @@ namespace ACE.Entity
             spawnPoint = aceC.Position;
 
             // init state machine
-            combatStateMachine.Initialise(MonsterRules.GetRules(), MonsterRules.GetInitState());
-            this.OnIdleEnter();
+            combatStateMachine.Initialize(MonsterRules.GetRules(), MonsterRules.GetInitState());
+            OnIdleEnter();
         }
 
         public void OnIdleEnter()
         {
-            Console.WriteLine($"{this.Name} is idle now.");
+            Console.WriteLine($"{Name} is idle now.");
 
             TargetPlayer = null;
             stateTimerStop = 0;
@@ -73,9 +73,9 @@ namespace ACE.Entity
 
                 nearPlayers.ForEach(p =>
                 {
-                    if (p.Location.SquaredDistanceTo(this.Location) < min)
+                    if (p.Location.SquaredDistanceTo(Location) < min)
                     {
-                        min = p.Location.SquaredDistanceTo(this.Location);
+                        min = p.Location.SquaredDistanceTo(Location);
                         target = p;
                     }
                 });
@@ -94,7 +94,7 @@ namespace ACE.Entity
 
         public void OnSensePlayer()
         {
-            Console.WriteLine($"{this.Name} senses player {TargetPlayer.Name}.");
+            Console.WriteLine($"{Name} senses player {TargetPlayer.Name}.");
 
             if (combatStateMachine.ChangeState((int)MonsterStates.EnterCombat))
                 OnEnterCombat();
@@ -110,11 +110,11 @@ namespace ACE.Entity
 
         public void OnEnterCombat()
         {
-            Console.WriteLine($"{this.Name} enters combat with {TargetPlayer.Name}.");
+            Console.WriteLine($"{Name} enters combat with {TargetPlayer.Name}.");
 
             // Enter combat stance
             var combatStance = new UniversalMotion(MotionStance.UANoShieldAttack);
-            var updateMotion = new GameMessageUpdateMotion(this, combatStance);
+            var updateMotion = new GameMessageUpdateMotion(Guid, Sequences.GetCurrentSequence(Network.Sequence.SequenceType.ObjectInstance), Sequences, combatStance);
             TargetPlayer.Session.Network.EnqueueSend(updateMotion);
 
             if (this.Location.SquaredDistanceTo(TargetPlayer.Location) < 10)
@@ -151,8 +151,8 @@ namespace ACE.Entity
             {
                 if (!isMoving)
                 {
-                    var m2p = new UniversalMotion(MotionStance.UANoShieldAttack, TargetPlayer);
-                    var moveToPlayer = new GameMessageUpdateMotion(this, TargetPlayer, m2p, MovementTypes.MoveToObject, 100.0f);
+                    var m2p = new UniversalMotion(MotionStance.UANoShieldAttack, TargetPlayer.Location, TargetPlayer.Guid);
+                    var moveToPlayer = new GameMessageUpdateMotion(Guid, Sequences.GetCurrentSequence(Network.Sequence.SequenceType.ObjectInstance), Sequences, m2p);
                     this.Location = TargetPlayer.Location;
                     var targetPosition = new GameMessageUpdatePosition(this);
                     TargetPlayer.Session.Network.EnqueueSend(moveToPlayer, targetPosition);
@@ -166,7 +166,7 @@ namespace ACE.Entity
                 // Check if the monster is close enough yet, if not start another move to player
                 if (distance < 10)
                 {
-                    Console.WriteLine($"{this.Name} is close enough to {TargetPlayer.Name}.");
+                    Console.WriteLine($"{Name} is close enough to {TargetPlayer.Name}.");
 
                     if (combatStateMachine.ChangeState((int)MonsterStates.AttackPlayer))
                         OnAttackPlayerEnter();
@@ -177,7 +177,7 @@ namespace ACE.Entity
                 {
                     if (distance > 40)
                     {
-                        Console.WriteLine($"{this.Name} is too far away from {TargetPlayer.Name}.");
+                        Console.WriteLine($"{Name} is too far away from {TargetPlayer.Name}.");
 
                         // Player moved too far away so break combat
                         if (combatStateMachine.ChangeState((int)MonsterStates.ExitCombat))
@@ -187,7 +187,7 @@ namespace ACE.Entity
                     }
                     else if (this.Location.SquaredDistanceTo(spawnPoint) > 60)
                     {
-                        Console.WriteLine($"{this.Name} is too far away from spawn point.");
+                        Console.WriteLine($"{Name} is too far away from spawn point.");
 
                         // Monster is too far from spawn, so break combat
                         if (combatStateMachine.ChangeState((int)MonsterStates.ExitCombat))
@@ -197,7 +197,7 @@ namespace ACE.Entity
                     }
                     else
                     {
-                        Console.WriteLine($"{this.Name} needs to follow {TargetPlayer.Name}.");
+                        Console.WriteLine($"{Name} needs to follow {TargetPlayer.Name}.");
 
                         // It's still worth hunting the player, so move again
                         OnMoveToPlayerEnter();
@@ -208,13 +208,13 @@ namespace ACE.Entity
 
         public void OnAttackPlayerEnter()
         {
-            Console.WriteLine($"{this.Name} attacks {TargetPlayer.Name}.");
+            Console.WriteLine($"{Name} attacks {TargetPlayer.Name}.");
 
             isMoving = false;
             stateTimerStop = 0;
 
             // Update the players CURRENT_ATTACKER_ID
-            var updateMessage = new GameMessagePrivateUpdateInstanceId(this.Guid);
+            var updateMessage = new GameMessagePrivateUpdateInstanceId(Guid);
             TargetPlayer.Session.Network.EnqueueSend(updateMessage);
 
             OnAttackPlayer();
@@ -225,7 +225,7 @@ namespace ACE.Entity
             // Check distance again, in case the target moved
             if (this.Location.SquaredDistanceTo(TargetPlayer.Location) > 10)
             {
-                Console.WriteLine($"{this.Name} wants to attack, but {TargetPlayer.Name} moved away.");
+                Console.WriteLine($"{Name} wants to attack, but {TargetPlayer.Name} moved away.");
 
                 // Player moved too far away so break combat
                 if (combatStateMachine.ChangeState((int)MonsterStates.ExitCombat))
@@ -242,14 +242,14 @@ namespace ACE.Entity
 
                 if (damageAmount < TargetPlayer.Health.Current)
                 {
-                    Console.WriteLine($"{this.Name} has hit {TargetPlayer.Name} for {damageAmount} damage.");
+                    Console.WriteLine($"{Name} has hit {TargetPlayer.Name} for {damageAmount} damage.");
                     TargetPlayer.Health.Current -= damageAmount;
                     var msgHealthUpdate = new GameMessagePrivateUpdateAttribute2ndLevel(TargetPlayer.Session, Vital.Health, TargetPlayer.Health.Current);
                     TargetPlayer.Session.Network.EnqueueSend(msgHealthUpdate);
                 }
                 else
                 {
-                    Console.WriteLine($"{this.Name} has killed {TargetPlayer.Name}.");
+                    Console.WriteLine($"{Name} has killed {TargetPlayer.Name}.");
 
                     TargetPlayer.Health.Current = 0;
                     var msgHealthUpdate = new GameMessagePrivateUpdateAttribute2ndLevel(TargetPlayer.Session, Vital.Health, TargetPlayer.Health.Current);
@@ -269,7 +269,7 @@ namespace ACE.Entity
 
         public void OnExitCombat()
         {
-            Console.WriteLine($"{this.Name} stops Combat.");
+            Console.WriteLine($"{Name} stops Combat.");
 
             if (combatStateMachine.ChangeState((int)MonsterStates.ReturnToSpawn))
                 OnReturnToSpawnEnter();
@@ -279,7 +279,7 @@ namespace ACE.Entity
 
         public void OnReturnToSpawnEnter()
         {
-            Console.WriteLine($"{this.Name} is now returning to spawn point.");
+            Console.WriteLine($"{Name} is now returning to spawn point.");
 
             isMoving = false;
             stateTimerStop = 0;
@@ -294,7 +294,7 @@ namespace ACE.Entity
                 if (!isMoving)
                 {
                     var m2p = new UniversalMotion(MotionStance.Standing, spawnPoint);
-                    var moveToPosition = new GameMessageUpdateMotion(this, spawnPoint, m2p, MovementTypes.MoveToPosition, 100.0f);
+                    var moveToPosition = new GameMessageUpdateMotion(Guid, Sequences.GetCurrentSequence(Network.Sequence.SequenceType.ObjectInstance), Sequences, m2p);
                     this.Location = spawnPoint;
                     var targetPosition = new GameMessageUpdatePosition(this);
                     TargetPlayer.Session.Network.EnqueueSend(moveToPosition, targetPosition);
@@ -304,7 +304,7 @@ namespace ACE.Entity
             }
             else
             {
-                Console.WriteLine($"{this.Name} has reached it's spawn point.");
+                Console.WriteLine($"{Name} has reached it's spawn point.");
 
                 isMoving = false;
                 stateTimerStop = 0;
@@ -328,7 +328,7 @@ namespace ACE.Entity
             var attackMotion = new UniversalMotion(MotionStance.UANoShieldAttack, attackMotionItem);
             attackMotion.HasTarget = true;
             attackMotion.MovementData.CurrentStyle = (ushort)MotionStance.UANoShieldAttack;
-            var updateMotion = new GameMessageUpdateMotion(this, attackMotion);
+            var updateMotion = new GameMessageUpdateMotion(Guid, Sequences.GetCurrentSequence(Network.Sequence.SequenceType.ObjectInstance), Sequences, attackMotion);
             TargetPlayer.Session.Network.EnqueueSend(updateMotion);
 
             // SoundEvent: sound 48 (HitFlesh1), volume 0,5

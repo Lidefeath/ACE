@@ -115,12 +115,19 @@ namespace ACE.Entity
             switch (CombatMode)
             {
                 case CombatMode.Peace:
-                    SetMotionState(new UniversalMotion(MotionStance.Standing));
+                    var pm = new UniversalMotion(MotionStance.Standing);
+                    SetMotionState(pm);
                     break;
                 case CombatMode.Melee:
-                    var gm = new UniversalMotion(MotionStance.UANoShieldAttack);
+                    // Test - Set AttackType to Bludgeon
+                    Player p = (Player)this;
+                    var attackType = new GameMessagePrivateUpdatePropertyInt(p.Session, Enum.Properties.PropertyInt.AttackType, (uint)DamageType.Bludgeoning);
+                    p.Session.Network.EnqueueSend(attackType);
+
+                    var gm = new UniversalMotion(MotionStance.UANoShieldAttack); // , new MotionItem(MotionCommand.HandCombat));
                     gm.MovementData.CurrentStyle = (ushort)MotionStance.UANoShieldAttack;
                     SetMotionState(gm);
+                    p.UpdatePosition(p.Location);
                     break;
             }
         }

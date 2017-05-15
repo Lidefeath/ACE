@@ -8,8 +8,8 @@ namespace ACE.Entity
     {
         public MovementStateFlag MovementStateFlag { get; private set; } = 0;
 
-        private ushort currentStyle = 0;
-        public ushort CurrentStyle
+        private uint currentStyle = 0;
+        public uint CurrentStyle
         {
             get
             {
@@ -22,8 +22,8 @@ namespace ACE.Entity
             }
         }
 
-        private ushort forwardCommand = 0;
-        public ushort ForwardCommand
+        private uint forwardCommand = 0;
+        public uint ForwardCommand
         {
             get
             {
@@ -36,8 +36,8 @@ namespace ACE.Entity
             }
         }
 
-        private ushort sideStepCommand = 0;
-        public ushort SideStepCommand
+        private uint sideStepCommand = 0;
+        public uint SideStepCommand
         {
             get
             {
@@ -50,8 +50,8 @@ namespace ACE.Entity
             }
         }
 
-        private ushort turnCommand = 0;
-        public ushort TurnCommand
+        private uint turnCommand = 0;
+        public uint TurnCommand
         {
             get
             {

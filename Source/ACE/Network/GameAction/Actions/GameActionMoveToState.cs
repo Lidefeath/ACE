@@ -1,6 +1,8 @@
 ﻿using System;
 using ACE.Entity;
 using ACE.StateMachines.Enum;
+using ACE.Network.Motion;
+using ACE.Network.Enum;
 
 namespace ACE.Network.GameAction.Actions
 {
@@ -35,7 +37,7 @@ namespace ACE.Network.GameAction.Actions
         {
             Position position;
             uint currentHoldkey;
-            uint currentStyle;
+            uint currentStyle = 0;
             MotionStateDirection forward = new MotionStateDirection();
             MotionStateDirection sideStep = new MotionStateDirection();
             MotionStateDirection turn = new MotionStateDirection();
@@ -47,6 +49,7 @@ namespace ACE.Network.GameAction.Actions
             bool longJump;*/
 
             MotionStateFlag flags = (MotionStateFlag)message.Payload.ReadUInt32();
+            Console.WriteLine($"MoveToState Flags = {flags}");
 
             if ((flags & MotionStateFlag.CurrentHoldKey) != 0)
                 currentHoldkey = message.Payload.ReadUInt32();
@@ -93,7 +96,34 @@ namespace ACE.Network.GameAction.Actions
             message.Payload.ReadByte();
             if (session.Player.CreatureMovementStates == MovementStates.Moving)
                 session.Player.UpdateAutonomousMove();
-            session.Player.UpdatePosition(position);
+
+            UniversalMotion newMotionState;
+            // if we don't read another stance in currentStyle, we're Standing
+            newMotionState = new UniversalMotion(MotionStance.Standing);
+            newMotionState.IsAutonomous = true;
+
+            // if we're in another stance, update it
+            if ((flags & MotionStateFlag.CurrentStyle) != 0)
+            {
+                newMotionState = new UniversalMotion((MotionStance)currentStyle); // , new MotionItem((MotionCommand)currentStyle));
+                newMotionState.MovementData.CurrentStyle = currentStyle;
+            }
+                
+            if ((flags & MotionStateFlag.ForwardCommand) != 0)
+                newMotionState.MovementData.ForwardCommand = forward.Command;
+            if ((flags & MotionStateFlag.ForwardSpeed) != 0)
+                newMotionState.MovementData.ForwardSpeed = forward.Speed;
+            if ((flags & MotionStateFlag.SideStepCommand) != 0)
+                newMotionState.MovementData.SideStepCommand = sideStep.Command;
+            if ((flags & MotionStateFlag.SideStepSpeed) != 0)
+                newMotionState.MovementData.SideStepSpeed = sideStep.Speed;
+            if ((flags & MotionStateFlag.TurnCommand) != 0)
+                newMotionState.MovementData.TurnCommand = turn.Command;
+            if ((flags & MotionStateFlag.TurnSpeed) != 0)
+                newMotionState.MovementData.TurnSpeed = turn.Speed;
+            session.Player.SetMotionState(newMotionState);
+
+            // session.Player.UpdatePosition(position);
         }
     }
 }

@@ -14,6 +14,7 @@ using ACE.Network.Enum;
 using ACE.Factories;
 using ACE.Entity.Enum;
 using ACE.DatLoader.FileTypes;
+using ACE.StateMachines;
 
 namespace ACE.Entity
 {

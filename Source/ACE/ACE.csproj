@@ -176,6 +176,7 @@
     <Compile Include="Network\GameAction\Actions\GameActionAddFriend.cs" />
     <Compile Include="Network\GameAction\Actions\GameActionAdvocateTeleport.cs" />
     <Compile Include="Network\GameAction\Actions\GameActionAllegianceUpdateRequest.cs" />
+    <Compile Include="Network\GameAction\Actions\GameActionCancelAttack.cs" />
     <Compile Include="Network\GameAction\Actions\GameActionChannelIndex.cs" />
     <Compile Include="Network\GameAction\Actions\GameActionChannelList.cs" />
     <Compile Include="Network\GameAction\Actions\GameActionChatChannel.cs" />
@@ -229,7 +230,6 @@
     <Compile Include="Network\GameEvent\Events\GameEventFriendsListUpdate.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventHouseStatus.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventIdentifyObjectResponse.cs" />
-    <Compile Include="Network\GameEvent\Events\GameEventPurgeAllEnchantments.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventInflictMeleeDamage.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventPurgeAllEnchantments.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventReceiveMeleeDamage.cs" />
@@ -334,7 +334,6 @@
     <Compile Include="StateMachines\Rules\ContainerRules.cs" />
     <Compile Include="StateMachines\Rules\MovementRules.cs" />
     <Compile Include="StateMachines\Enum\MonsterStates.cs" />
-    <Compile Include="StateMachines\Rule.cs" />
     <Compile Include="StateMachines\Rules\MonsterRules.cs" />
     <Compile Include="StateMachines\StateMachine.cs" />
   </ItemGroup>
