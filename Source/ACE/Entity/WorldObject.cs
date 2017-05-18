@@ -7,6 +7,8 @@ using System.IO;
 using ACE.Managers;
 using log4net;
 using ACE.Network.Motion;
+using ACE.Network.GameAction;
+using ACE.Network.GameEvent.Events;
 
 namespace ACE.Entity
 {
@@ -124,18 +126,34 @@ namespace ACE.Entity
                     var attackType = new GameMessagePrivateUpdatePropertyInt(p.Session, Enum.Properties.PropertyInt.AttackType, (uint)DamageType.Bludgeoning);
                     p.Session.Network.EnqueueSend(attackType);
 
+                    // var meleeMotion = new UniversalMotion(MotionStance.UANoShieldAttack); // , new MotionItem(MotionCommand.HandCombat));
+                    // meleeMotion.MovementData.CurrentStyle = (ushort)MotionStance.UANoShieldAttack;
+                    // SetUniversalMotion(meleeMotion);
                     var gm = new UniversalMotion(MotionStance.UANoShieldAttack); // , new MotionItem(MotionCommand.HandCombat));
                     gm.MovementData.CurrentStyle = (ushort)MotionStance.UANoShieldAttack;
                     SetMotionState(gm);
-                    p.UpdatePosition(p.Location);
+                    // p.UpdatePosition(p.Location);
+
+                    // var ad = new GameEventAttackDone(p.Session, p.Guid.Full, 1);
+                    // p.Session.Network.EnqueueSend(ad);
                     break;
             }
+        }
+
+        public void SetUniversalMotion(UniversalMotion motion)
+        {
+            Player p = (Player)this;
+            PhysicsData.CurrentMotionState = motion;
+
+            var actionMelee = new QueuedGameAction(p.Guid.Full, motion, GameActionType.MovementEvent);
+            p.AddToActionQueue(actionMelee);
         }
 
         public void SetMotionState(MotionState motionState)
         {
             Player p = (Player)this;
-            PhysicsData.CurrentMotionState = motionState;
+            // PhysicsData.CurrentMotionState = motionState;
+
             var updateMotion = new GameMessageUpdateMotion(p.Guid,
                 p.Sequences.GetCurrentSequence(SequenceType.ObjectInstance), p.Sequences, motionState);
             p.Session.Network.EnqueueSend(updateMotion);

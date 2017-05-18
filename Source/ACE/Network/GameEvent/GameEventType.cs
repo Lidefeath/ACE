@@ -17,6 +17,7 @@
         ChannelIndex                        = 0x0149,
         DropTemp                            = 0x019A, // I need to look at the client and pull this out.   This is a place holder. Og II
 
+        AttackDone                          = 0x01A7,
         YourDeath                           = 0x01AC, // You have died, as a player.
         DeathNotice                         = 0x01AD, // Something (player/creature) died.
         InflictMeleeDamage                  = 0x01B1,

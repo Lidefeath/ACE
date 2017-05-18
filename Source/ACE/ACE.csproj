@@ -220,6 +220,7 @@
     <Compile Include="Network\GameAction\GameActionPacket.cs" />
     <Compile Include="Network\GameAction\QueuedGameAction.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventAllegianceUpdate.cs" />
+    <Compile Include="Network\GameEvent\Events\GameEventAttackDone.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventChannelBroadcast.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventChannelIndex.cs" />
     <Compile Include="Network\GameEvent\Events\GameEventChannelList.cs" />

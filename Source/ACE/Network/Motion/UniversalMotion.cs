@@ -184,7 +184,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.CurrentStyle = (ushort)reader.ReadUInt32();
+                    MovementData.CurrentStyle = reader.ReadUInt16();
                 }
                 catch (Exception)
                 {
@@ -196,7 +196,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.ForwardCommand = (ushort)reader.ReadUInt32();
+                    MovementData.ForwardCommand = reader.ReadUInt16();
                 }
                 catch (Exception)
                 {
@@ -208,7 +208,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.ForwardSpeed = (ushort)reader.ReadSingle();
+                    MovementData.ForwardSpeed = reader.ReadSingle();
                 }
                 catch (Exception)
                 {
@@ -220,7 +220,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.SideStepCommand = (ushort)reader.ReadUInt32();
+                    MovementData.SideStepCommand = reader.ReadUInt16();
                 }
                 catch (Exception)
                 {
@@ -232,7 +232,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.SideStepSpeed = (ushort)reader.ReadSingle();
+                    MovementData.SideStepSpeed = reader.ReadSingle();
                 }
                 catch (Exception)
                 {
@@ -244,7 +244,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.TurnCommand = (ushort)reader.ReadUInt32();
+                    MovementData.TurnCommand = reader.ReadUInt16();
                 }
                 catch (Exception)
                 {
@@ -256,7 +256,7 @@ namespace ACE.Network.Motion
             {
                 try
                 {
-                    MovementData.TurnSpeed = (ushort)reader.ReadSingle();
+                    MovementData.TurnSpeed = reader.ReadSingle();
                 }
                 catch (Exception)
                 {
