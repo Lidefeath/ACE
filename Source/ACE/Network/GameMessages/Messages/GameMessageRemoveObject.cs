@@ -11,6 +11,8 @@ namespace ACE.Network.GameMessages.Messages
             // TODO: Verify.  this was done without referencing the protocol spec
             Writer.WriteGuid(worldObject.Guid);
             Writer.Write(worldObject.Sequences.GetCurrentSequence(SequenceType.ObjectInstance));
+            // According to Pea this needs DWORD alignment
+            Writer.Align();
         }
     }
 }

@@ -30,6 +30,8 @@ namespace ACE.Network.GameMessages.Messages
             else
                 autonomous = 0;
             Writer.Write(autonomous);
+            // According to Pea movementData needs a DWORD alignment
+            Writer.Align();
             var movementData = newState.GetPayload(animationTargetGuid, sequence);
             Writer.Write(movementData);
             Writer.Align();

@@ -75,6 +75,8 @@ namespace ACE.Entity
 
             if ((PhysicsDescriptionFlag & PhysicsDescriptionFlag.Movement) != 0)
             {
+                // According to Pea movementData needs to be aligned to DWORD.
+                writer.Align();
                 if (currentMotionState != null)
                 {
                     var movementData = currentMotionState.GetPayload(wo.Guid, wo.Sequences);
